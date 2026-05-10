@@ -8,8 +8,7 @@ jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
 
-    # JWT
-    app.config['JWT_SECRET_KEY'] = 'dev-secret-key-change-later'
+    app.config['JWT_SECRET_KEY'] = 'password'
 
     app.config['DB_HOST']   = 'localhost'
     app.config['DB_PORT']   = 5432

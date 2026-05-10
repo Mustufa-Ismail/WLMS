@@ -1,12 +1,4 @@
--- ============================================================
---  WLMS — Section 4: STORED PROCEDURES + TRANSACTIONS
---  Run AFTER wlms_03_views.sql
---  PostgreSQL 13+  |  pgAdmin 4
--- ============================================================
-
--- ============================================================
---  SP1 — Create Purchase Order header
--- ============================================================
+--Create Purchase Order header
 
 CREATE OR REPLACE PROCEDURE sp_create_purchase_order(
     p_supplier_id INT,
@@ -20,10 +12,7 @@ BEGIN
 END;
 $$;
 
-
--- ============================================================
---  SP2 — Add a line to a Purchase Order
--- ============================================================
+--Add a line to a Purchase Order
 
 CREATE OR REPLACE PROCEDURE sp_add_po_line(
     p_po_id     INT,
@@ -40,9 +29,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP3 — Create a GRN header (Draft)
--- ============================================================
+--Create a GRN header
 
 CREATE OR REPLACE PROCEDURE sp_create_grn(
     p_po_id       INT,
@@ -57,9 +44,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP4 — Add a line to a GRN
--- ============================================================
+--Add a line to a GRN
 
 CREATE OR REPLACE PROCEDURE sp_add_grn_line(
     p_grn_id  INT,
@@ -75,9 +60,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP5 — Confirm a GRN → fires T2 trigger automatically
--- ============================================================
+-- Confirm a GRN
 
 CREATE OR REPLACE PROCEDURE sp_confirm_grn(
     p_grn_id INT
@@ -90,11 +73,6 @@ BEGIN
     WHERE grn_id = p_grn_id;
 END;
 $$;
-
-
--- ============================================================
---  SP6 — Create Sales Order header
--- ============================================================
 
 CREATE OR REPLACE PROCEDURE sp_create_sales_order(
     p_customer_id INT,
@@ -109,9 +87,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP7 — Add a line to a Sales Order → fires T3 trigger
--- ============================================================
+-- Add a line to a Sales Order
 
 CREATE OR REPLACE PROCEDURE sp_add_so_line(
     p_so_id      INT,
@@ -128,9 +104,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP8 — Create Delivery Challan header
--- ============================================================
+--Create Delivery Challan header
 
 CREATE OR REPLACE PROCEDURE sp_create_dc(
     p_so_id      INT,
@@ -162,9 +136,7 @@ BEGIN
 END;
 $$;
 
--- ============================================================
---  SP9 — Add a line to a Delivery Challan
--- ============================================================
+--Add a line to a Delivery Challan
 
 CREATE OR REPLACE PROCEDURE sp_add_dc_line(
     p_dc_id   INT,
@@ -180,9 +152,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP10 — Dispatch DC → fires T4 trigger automatically
--- ============================================================
+-- Dispatch DC
 
 CREATE OR REPLACE PROCEDURE sp_dispatch_dc(
     p_dc_id INT
@@ -197,9 +167,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP11 — Deliver DC → fires T5 trigger automatically
--- ============================================================
+--Deliver DC
 
 CREATE OR REPLACE PROCEDURE sp_deliver_dc(
     p_dc_id INT
@@ -214,9 +182,7 @@ END;
 $$;
 
 
--- ============================================================
---  SP12 — Advance SO status: Pending → Processing → Packed
--- ============================================================
+-- Advance SO status
 
 CREATE OR REPLACE PROCEDURE sp_advance_so_status(
     p_so_id INT
@@ -254,11 +220,7 @@ BEGIN
     RAISE NOTICE 'SO % moved from % → %.', p_so_id, v_current, v_next;
 END;
 $$;
-
-
--- ============================================================
---  SP13 — Cancel Sales Order (releases reserved stock)
--- ============================================================
+-- Cancel Sales Order
 
 CREATE OR REPLACE PROCEDURE sp_cancel_sales_order(
     p_so_id INT
@@ -304,10 +266,7 @@ BEGIN
 END;
 $$;
 
-
--- ============================================================
---  SP14 — Cancel Purchase Order (Pending only)
--- ============================================================
+--Cancel Purchase Order
 
 CREATE OR REPLACE PROCEDURE sp_cancel_purchase_order(
     p_po_id INT
@@ -340,16 +299,6 @@ BEGIN
 END;
 $$;
 
-
--- ============================================================
---  SECTION 5: TRANSACTIONS
--- ============================================================
-
--- ============================================================
---  TXN1 — Full Inbound Flow
---  PO → PO Lines → GRN → GRN Lines → Confirm
--- ============================================================
-
 DO $$
 DECLARE
     v_po_id  INT;
@@ -376,12 +325,6 @@ EXCEPTION
         RAISE EXCEPTION 'TXN1 failed and rolled back: %', SQLERRM;
 END;
 $$;
-
-
--- ============================================================
---  TXN2 — Full Outbound Flow
---  SO → SO Lines → Advance → DC → DC Lines → Dispatch → Deliver
--- ============================================================
 
 DO $$
 DECLARE
@@ -414,6 +357,3 @@ EXCEPTION
 END;
 $$;
 
--- ============================================================
---  END OF SECTION 4 + 5
--- ============================================================

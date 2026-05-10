@@ -1,12 +1,5 @@
--- ============================================================
---  WLMS — Section 3: VIEWS
---  Run AFTER wlms_02_triggers.sql
---  PostgreSQL 13+  |  pgAdmin 4
--- ============================================================
 
--- ============================================================
---  V1 — STOCK STATUS (LIVE INVENTORY)
--- ============================================================
+--STOCK STATUS (LIVE INVENTORY)
 
 CREATE OR REPLACE VIEW vw_stock_status AS
 SELECT
@@ -28,9 +21,7 @@ JOIN unit_of_measure u ON u.uom_id = i.uom_id
 WHERE i.is_active = TRUE;
 
 
--- ============================================================
---  V2 — PURCHASE ORDER FULL VIEW
--- ============================================================
+--PURCHASE ORDER FULL VIEW
 
 CREATE OR REPLACE VIEW vw_purchase_order_full AS
 SELECT
@@ -58,10 +49,7 @@ JOIN purchase_order_lines pol ON pol.po_id = po.po_id
 JOIN items i ON i.item_id = pol.item_id
 JOIN unit_of_measure um ON um.uom_id = i.uom_id;
 
-
--- ============================================================
 --  V3 — GRN FULL VIEW
--- ============================================================
 
 CREATE OR REPLACE VIEW vw_grn_full AS
 SELECT
@@ -82,9 +70,7 @@ JOIN items i ON i.item_id = grl.item_id
 JOIN unit_of_measure um ON um.uom_id = i.uom_id;
 
 
--- ============================================================
---  V4 — SALES ORDER FULL VIEW
--- ============================================================
+-- SALES ORDER FULL VIEW
 
 CREATE OR REPLACE VIEW vw_sales_order_full AS
 SELECT
@@ -114,9 +100,7 @@ JOIN items i ON i.item_id = sol.item_id
 JOIN unit_of_measure um ON um.uom_id = i.uom_id;
 
 
--- ============================================================
---  V5 — DELIVERY CHALLAN FULL VIEW
--- ============================================================
+--DELIVERY CHALLAN FULL VIEW
 
 CREATE OR REPLACE VIEW vw_delivery_challan_full AS
 SELECT
@@ -144,9 +128,7 @@ JOIN items i ON i.item_id = dcl.item_id
 JOIN unit_of_measure um ON um.uom_id = i.uom_id;
 
 
--- ============================================================
---  V6 — LOW STOCK ALERTS
--- ============================================================
+--LOW STOCK ALERT
 
 CREATE OR REPLACE VIEW vw_low_stock_alerts AS
 SELECT
@@ -162,9 +144,7 @@ WHERE is_low_stock = TRUE
 ORDER BY shortage_quantity DESC;
 
 
--- ============================================================
---  V7 — ADMIN DASHBOARD
--- ============================================================
+-- ADMIN DASHBOARD
 
 CREATE OR REPLACE VIEW vw_admin_dashboard AS
 SELECT
@@ -192,6 +172,3 @@ SELECT
      FROM sales_order_lines sol
      JOIN sales_orders so ON so.so_id = sol.so_id
      WHERE so.payment_status = 'Unpaid')                                        AS revenue_pending;
--- ============================================================
---  END OF SECTION 3
--- ============================================================

@@ -1,12 +1,7 @@
--- ============================================================
---  WLMS — Section 1: TABLE DEFINITIONS
---  Run this first. Everything else depends on these tables.
---  Compatible with PostgreSQL 13+, pgAdmin 4
--- ============================================================
 
--- ============================================================
---  BLOCK 1 — USERS & ROLES
--- ============================================================
+
+-- USERS & ROLES
+
 
 CREATE TABLE users (
     user_id       SERIAL          PRIMARY KEY,
@@ -32,9 +27,7 @@ CREATE TABLE user_roles (
     PRIMARY KEY (user_id, role_id)
 );
 
--- ============================================================
---  BLOCK 2 — META / DOCUMENT TYPES
--- ============================================================
+--  META / DOCUMENT TYPES
 
 CREATE TABLE document_types (
     document_type_id   SERIAL       PRIMARY KEY,
@@ -48,9 +41,7 @@ INSERT INTO document_types (document_name, description) VALUES
     ('Sales Order',        'Outbound order created on behalf of a customer.'),
     ('Delivery Challan',   'Dispatch document assigning driver and vehicle to a shipment.');
 
--- ============================================================
---  BLOCK 3 — MASTER DATA
--- ============================================================
+--MASTER DATA
 
 CREATE TABLE unit_of_measure (
     uom_id     SERIAL      PRIMARY KEY,
@@ -93,9 +84,7 @@ CREATE TABLE items (
     created_at     TIMESTAMP       NOT NULL DEFAULT NOW()
 );
 
--- ============================================================
---  BLOCK 4 — INVENTORY
--- ============================================================
+--  INVENTORY
 
 CREATE TABLE stock_balance (
     item_id            INT             PRIMARY KEY REFERENCES items(item_id),
@@ -104,9 +93,7 @@ CREATE TABLE stock_balance (
     last_updated       TIMESTAMP       NOT NULL DEFAULT NOW()
 );
 
--- ============================================================
---  BLOCK 5 — PROCUREMENT FLOW (INBOUND)
--- ============================================================
+--PROCUREMENT FLOW
 
 CREATE TABLE purchase_orders (
     po_id         SERIAL      PRIMARY KEY,
@@ -150,9 +137,7 @@ CREATE TABLE goods_receipt_lines (
     UNIQUE (grn_id, item_id)
 );
 
--- ============================================================
---  BLOCK 6 — SALES FLOW (OUTBOUND)
--- ============================================================
+--SALES FLOW
 
 CREATE TABLE sales_orders (
     so_id           SERIAL      PRIMARY KEY,
@@ -201,6 +186,3 @@ CREATE TABLE delivery_challan_lines (
     UNIQUE (dc_id, item_id)
 );
 
--- ============================================================
---  END OF SECTION 1
--- ============================================================

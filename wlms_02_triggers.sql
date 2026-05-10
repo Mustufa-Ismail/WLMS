@@ -1,13 +1,3 @@
--- ============================================================
---  WLMS — Section 2: TRIGGERS
---  Run AFTER wlms_01_tables.sql
---  PostgreSQL 13+  |  pgAdmin 4
--- ============================================================
-
--- ============================================================
---  T1 — Auto-initialise stock_balance on new item
--- ============================================================
-
 CREATE OR REPLACE FUNCTION fn_init_stock_balance()
 RETURNS TRIGGER
 LANGUAGE plpgsql AS
@@ -24,11 +14,6 @@ CREATE TRIGGER trg_init_stock_balance
 AFTER INSERT ON items
 FOR EACH ROW
 EXECUTE FUNCTION fn_init_stock_balance();
-
-
--- ============================================================
---  T2 — GRN Confirmation → update stock + PO progress (SAFE)
--- ============================================================
 
 CREATE OR REPLACE FUNCTION fn_grn_confirm_stock()
 RETURNS TRIGGER
@@ -97,11 +82,6 @@ AFTER UPDATE OF status ON goods_receipts
 FOR EACH ROW
 EXECUTE FUNCTION fn_grn_confirm_stock();
 
-
--- ============================================================
---  T3 — SO Line inserted → reserve stock
--- ============================================================
-
 CREATE OR REPLACE FUNCTION fn_so_line_reserve_stock()
 RETURNS TRIGGER
 LANGUAGE plpgsql AS
@@ -134,11 +114,6 @@ CREATE TRIGGER trg_so_line_reserve_stock
 AFTER INSERT ON sales_order_lines
 FOR EACH ROW
 EXECUTE FUNCTION fn_so_line_reserve_stock();
-
-
--- ============================================================
---  T4 — DC status → Dispatched (SAFE)
--- ============================================================
 
 CREATE OR REPLACE FUNCTION fn_dc_dispatched()
 RETURNS TRIGGER
@@ -210,9 +185,6 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_dc_dispatched();
 
 
--- ============================================================
---  T5 — DC status → Delivered (SAFE)
--- ============================================================
 
 CREATE OR REPLACE FUNCTION fn_dc_delivered()
 RETURNS TRIGGER
@@ -250,9 +222,7 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_dc_delivered();
 
 
--- ============================================================
---  T6 — Auto-stamp updated_at on header tables
--- ============================================================
+
 
 CREATE OR REPLACE FUNCTION fn_stamp_updated_at()
 RETURNS TRIGGER
@@ -275,9 +245,7 @@ FOR EACH ROW
 EXECUTE FUNCTION fn_stamp_updated_at();
 
 
--- ============================================================
---  T7 — Auto-stamp last_updated on stock_balance
--- ============================================================
+
 
 CREATE OR REPLACE FUNCTION fn_stamp_stock_last_updated()
 RETURNS TRIGGER
@@ -293,7 +261,3 @@ CREATE TRIGGER trg_stock_last_updated
 BEFORE UPDATE ON stock_balance
 FOR EACH ROW
 EXECUTE FUNCTION fn_stamp_stock_last_updated();
-
--- ============================================================
---  END OF SECTION 2
--- ============================================================
