@@ -30,7 +30,7 @@ def login():
     if not user['is_active']:
         return jsonify({"msg": "Account is inactive"}), 403
 
-    pw     = data['password'].encode()
+    pw = data['password'].encode()
     stored = user['password_hash']
     try:
         valid = bcrypt.checkpw(pw, stored.encode())
